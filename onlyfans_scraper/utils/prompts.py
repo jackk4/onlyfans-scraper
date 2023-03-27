@@ -136,8 +136,14 @@ def auth_prompt(auth) -> dict:
         {
             'type': 'input',
             'name': 'app-token',
-            'message': 'Enter your `app-token` value:',
+            'message': 'Enter your `app-token` value (press Enter for default):',
             'default': auth['app-token']
+        },
+        {
+            'type': 'input',
+            'name': 'open-browser',
+            'message': 'Follow the README to get your Cookie, User-Agent, and x-bc values and press Enter to continue...',
+            'default': ''
         },
         {
             'type': 'input',

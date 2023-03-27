@@ -6,9 +6,14 @@ r"""
  \___/ |_| |_||_| \__, ||_|   \__,_||_| |_||___/       |___/ \___||_|    \__,_|| .__/  \___||_|   
                   |___/                                                        |_|                
 """
+
+from pathlib import Path
+
+homePath = str(Path.home()) + '/Vault/OfScraper'
 preferences = 'pref_config.py'
-configPath = '.config/onlyfans-scraper'
+configPath = homePath + '/.config'
 configFile = 'config.json'
+authPath = homePath + '/.config'
 authFile = 'auth.json'
 databaseFile = 'models.db'
 mainProfile = 'main_profile'

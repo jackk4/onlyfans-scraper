@@ -15,19 +15,19 @@ from ..constants import configPath, configFile, mainProfile
 
 
 def read_config():
-    p = pathlib.Path.home() / configPath
-    if not p.is_dir():
-        p.mkdir(parents=True, exist_ok=True)
+    configPathlib = pathlib.Path(configPath)
+    if not configPathlib.is_dir():
+        configPathlib.mkdir(parents=True, exist_ok=True)
 
     config = {}
     while True:
         try:
-            with open(p / configFile, 'r') as f:
+            with open(configPathlib / configFile, 'r') as f:
                 config = json.load(f)
 
             try:
                 if [*config['config']] != [*get_current_config_schema(config)['config']]:
-                    config = auto_update_config(p, config)
+                    config = auto_update_config(configPathlib, config)
             except KeyError:
                 raise FileNotFoundError
 
@@ -35,7 +35,7 @@ def read_config():
         except FileNotFoundError:
             file_not_found_message = f"You don't seem to have a `config.json` file. One has been automatically created for you at: '{p / configFile}'"
 
-            make_config(p, config)
+            make_config(configPathlib, config)
             print(file_not_found_message)
     return config
 
