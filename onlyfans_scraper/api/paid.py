@@ -12,14 +12,17 @@ from ..constants import purchased_contentEP
 from ..utils import auth
 import httpx
 import pathlib
-from ..utils.config import read_config
+from ..utils.config import CONFIG
 from hashlib import md5
 import sqlite3 as sql
-config = read_config()['config']
+import tqdm
+
 paid_content_list_name = 'list'
 
-save_location = pathlib.Path(config.get('save_location'), 'Paid Content')
-save_location.mkdir(parents=True,exist_ok=True)
+input(CONFIG)
+save_location = pathlib.Path(
+    pathlib.Path.home(), CONFIG['save_location'], 'Paid Content')
+save_location.mkdir(parents=True, exist_ok=True)
 #  SQL SETUP
 
 db = sql.connect(pathlib.Path(save_location, 'paid.db'))
@@ -28,25 +31,18 @@ cursor = db.cursor()
 create_table_command = "CREATE TABLE IF NOT EXISTS hashes(id integer PRIMARY KEY, hash text, file_name text)"
 
 
-
-def add_to_db(hash,file_name):
+def add_to_db(hash, file_name):
     """Returns True if hash was not in the database and file can continue."""
     cursor.execute(create_table_command)
     db.commit()
     cursor.execute(f"SELECT * FROM hashes WHERE hash='{hash.hexdigest()}'")
     results = cursor.fetchall()
     if len(results) > 0:
-        print("Working in the background. Simmer down.")
         return False
-    cursor.execute("""INSERT INTO hashes(hash,file_name) VALUES(?,?)""",(hash.hexdigest(),file_name))
+    cursor.execute("""INSERT INTO hashes(hash,file_name) VALUES(?,?)""",
+                   (hash.hexdigest(), file_name))
     db.commit()
     return True
-
-
-
-
-
-
 
 
 def scrape_paid():
@@ -81,24 +77,19 @@ def download_paid(media):
     headers = auth.make_headers(auth.read_auth())
     with httpx.Client(http2=True, headers=headers, follow_redirects=True) as c:
         auth.add_cookies(c)
-        for item in media:
+        for item in tqdm.tqdm(media):
             r = c.get(item)
             rheaders = r.headers
             last_modified = rheaders.get("last-modified")
-            file_name = item.split('.')[-2].split('/')[-1].strip("/,.;!_-@#$%^&*()+\\ ")
+            file_name = item.split(
+                '.')[-2].split('/')[-1].strip("/,.;!_-@#$%^&*()+\\ ")
             content_type = rheaders.get("content-type").split('/')[-1]
-            pathlib.Path.mkdir(pathlib.Path(save_location),parents=True,exist_ok=True)
-            file = "{}/{}-{}.{}".format(save_location,file_name,last_modified.replace(':','-'),content_type)
+            pathlib.Path.mkdir(pathlib.Path(save_location),
+                               parents=True, exist_ok=True)
+            file = "{}/{}-{}.{}".format(save_location, file_name,
+                                        last_modified.replace(':', '-'), content_type)
             hash = md5(r.content)
-            if add_to_db(hash,file_name):
+            if add_to_db(hash, file_name):
                 with open(file, 'wb') as f:
                     print("Downloading: {}".format(file))
                     f.write(r.content)
-
-
-
-
-
-
-
-

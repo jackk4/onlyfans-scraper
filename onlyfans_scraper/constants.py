@@ -16,7 +16,6 @@ configFile = 'config.json'
 authPath = homePath + '/.config'
 authFile = 'auth.json'
 databaseFile = 'models.db'
-mainProfile = 'main_profile'
 requestAuth = 'request_auth.json'
 debug = False
 

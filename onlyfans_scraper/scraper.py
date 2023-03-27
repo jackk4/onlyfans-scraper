@@ -26,6 +26,7 @@ import webbrowser
 from revolution import Revolution
 from .utils.nap import nap_or_sleep
 
+CONFIG = config.CONFIG
 
 # @need_revolution("Getting messages...")
 @Revolution(desc='Getting messages...')
@@ -190,7 +191,18 @@ def get_models(headers, subscribe_count) -> list:
             subscriptions.get_subscriptions(headers, subscribe_count))
         parsed_subscriptions = subscriptions.parse_subscriptions(
             list_subscriptions)
-    return parsed_subscriptions
+        
+    selected_list = CONFIG['list']
+    if selected_list == '':
+        return parsed_subscriptions
+    
+    out_subscriptions = []
+    for subscription in parsed_subscriptions:
+        for in_list in subscription[3]:
+            if in_list['name'] == selected_list:
+                out_subscriptions.append(subscription[:3])
+                brea
+    return out_subscriptions
 
 
 def process_me(headers):
@@ -408,8 +420,6 @@ def main():
         paid_content = paid.scrape_paid()
         paid.download_paid(paid_content)
         sys.exit()
-
-
 
     try:
         process_prompts()

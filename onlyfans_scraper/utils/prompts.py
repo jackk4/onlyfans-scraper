@@ -88,16 +88,15 @@ def areas_prompt() -> list:
 
     questions = [
         {
-            'type': 'checkbox',
-            'qmark': '[?]',
+            'type': 'list',
             'name': name,
             'message': 'Which area(s) would you like to scrape? (Press ENTER to continue)',
             'choices': [
                 Choice('All', enabled=True),
-                Choice('Timeline'),
-                Choice('Archived'),
-                Choice('Highlights'),
-                Choice('Messages'),
+                Choice('Timeline', enabled=True),
+                Choice('Archived', enabled=True),
+                Choice('Highlights', enabled=True),
+                Choice('Messages', enabled=True),
             ]
         }
     ]
@@ -301,12 +300,12 @@ def config_prompt(config) -> dict:
             'type': 'input',
             'name': 'main_profile',
             'message': 'What would you like your main profile to be?',
-            'default': config['main_profile']
+            'default': config.get('main_profile', '')
         },
         {
             'type': 'input',
             'name': 'save_location',
-            'message': 'Where would you like to save downloaded content?',
+            'message': 'Where would you like to save downloaded content (absolute path)?',
             'default': config.get('save_location', '')
         },
         {
@@ -319,5 +318,5 @@ def config_prompt(config) -> dict:
 
     answers = prompt(questions)
     answers.update({'save_location': answers.get(
-        'save_location').strip('\"')})
+        'save_location').replace('\"', '/')})
     return answers

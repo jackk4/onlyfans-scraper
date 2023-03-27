@@ -21,7 +21,7 @@ except ModuleNotFoundError:
     pass
 
 from .auth import add_cookies
-from .config import read_config
+from .config import CONFIG
 from .dates import convert_date_to_timestamp
 from .separate import separate_by_id
 from ..db import operations
@@ -33,12 +33,10 @@ async def process_urls(headers, username, model_id, urls):
         media_ids = operations.get_media_ids(model_id)
         separated_urls = separate_by_id(urls, media_ids)
 
-        config = read_config()['config']
-
-        save_location = config.get('save_location')
+        save_location = CONFIG['save_location']
         if save_location:
             try:
-                dir = pathlib.Path(save_location)
+                dir = pathlib.Path(pathlib.Path.home(), save_location)
             except:
                 print(f"Unable to find save location. Using current working directory. ({pathlib.Path.cwd()})")
         else:
@@ -49,7 +47,7 @@ async def process_urls(headers, username, model_id, urls):
         except:
             print("Error saving to save directory, check the directory and make sure correct permissions have been issued.")
             sys.exit()
-        file_size_limit = config.get('file_size_limit')
+        file_size_limit = CONFIG['file_size_limit']
 
         # Added pool limit:
         limits = httpx.Limits(max_connections=8, max_keepalive_connections=5)

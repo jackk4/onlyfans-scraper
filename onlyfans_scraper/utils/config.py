@@ -11,7 +11,7 @@ import json
 import pathlib
 
 from .prompts import config_prompt
-from ..constants import configPath, configFile, mainProfile
+from ..constants import configPath, configFile
 
 
 def read_config():
@@ -33,7 +33,7 @@ def read_config():
 
             break
         except FileNotFoundError:
-            file_not_found_message = f"You don't seem to have a `config.json` file. One has been automatically created for you at: '{p / configFile}'"
+            file_not_found_message = f"You don't seem to have a `config.json` file. One has been automatically created for you at: '{configPathlib / configFile}'"
 
             make_config(configPathlib, config)
             print(file_not_found_message)
@@ -42,13 +42,8 @@ def read_config():
 
 def get_current_config_schema(config: dict) -> dict:
     config = config['config']
-
     new_config = {
-        'config': {
-            mainProfile: config.get(mainProfile) or mainProfile,
-            'save_location': config.get('save_location') or '',
-            'file_size_limit': config.get('file_size_limit') or '',
-        }
+        'config': config
     }
     return new_config
 
@@ -56,9 +51,10 @@ def get_current_config_schema(config: dict) -> dict:
 def make_config(path, config):
     config = {
         'config': {
-            mainProfile: mainProfile,
-            'save_location': '',
-            'file_size_limit': ''
+            'main_profile': 'default',
+            'save_location': '/Documents/of-scraper',
+            'file_size_limit': '',
+            'list': ''
         }
     }
 
@@ -102,3 +98,5 @@ def edit_config():
         f.write(json.dumps(updated_config, indent=4))
 
     print('`config.json` has been successfully edited.')
+
+CONFIG = read_config()['config']
