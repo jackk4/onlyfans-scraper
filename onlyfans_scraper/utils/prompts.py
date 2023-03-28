@@ -82,6 +82,21 @@ def username_prompt() -> str:
     answer = prompt(questions)
     return answer[name]
 
+def models_prompt(subscriptions: list) -> str:
+    name = 'models'
+
+    models = [sub[0] for sub in subscriptions]
+    questions = [
+        {
+            'type': 'list',
+            'name': name,
+            'message': 'Which model would you like to scrape',
+            'choices': models
+        }
+    ]
+
+    answer = prompt(questions)
+    return answer
 
 def areas_prompt() -> list:
     name = 'areas'
@@ -90,13 +105,13 @@ def areas_prompt() -> list:
         {
             'type': 'list',
             'name': name,
-            'message': 'Which area(s) would you like to scrape? (Press ENTER to continue)',
+            'message': 'Which area(s) would you like to scrape?',
             'choices': [
-                Choice('All', enabled=True),
-                Choice('Timeline', enabled=True),
-                Choice('Archived', enabled=True),
-                Choice('Highlights', enabled=True),
-                Choice('Messages', enabled=True),
+                Choice('All'),
+                Choice('Timeline'),
+                Choice('Archived'),
+                Choice('Highlights'),
+                Choice('Messages'),
             ]
         }
     ]

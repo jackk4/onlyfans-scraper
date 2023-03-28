@@ -8,7 +8,7 @@ r"""
 """
 from urllib.request import urlopen
 
-from ..constants import purchased_contentEP
+from ..constants import purchased_contentEP, contentPath
 from ..utils import auth
 import httpx
 import pathlib
@@ -19,9 +19,8 @@ import tqdm
 
 paid_content_list_name = 'list'
 
-input(CONFIG)
 save_location = pathlib.Path(
-    pathlib.Path.home(), CONFIG['save_location'], 'Paid Content')
+    contentPath, CONFIG['save_location'], 'Paid')
 save_location.mkdir(parents=True, exist_ok=True)
 #  SQL SETUP
 
@@ -52,8 +51,10 @@ def scrape_paid():
     offset = 0
     hasMore = True
     headers = auth.make_headers(auth.read_auth())
+    print("Scraping paid content...", end="")
     with httpx.Client(http2=True, headers=headers, follow_redirects=True) as c:
         while hasMore:
+            print(".", end="")
             headers = auth.make_headers(auth.read_auth())
             auth.add_cookies(c)
             url = purchased_contentEP.format(offset)
@@ -68,7 +69,7 @@ def scrape_paid():
                     for i in item['media']:
                         if "source" in i:
                             media_to_download.append(i['source']['source'])
-                            print("Scraping, it isn't frozen. It takes time.")
+    print(".")
     return media_to_download
 
 
@@ -77,7 +78,9 @@ def download_paid(media):
     headers = auth.make_headers(auth.read_auth())
     with httpx.Client(http2=True, headers=headers, follow_redirects=True) as c:
         auth.add_cookies(c)
-        for item in tqdm.tqdm(media):
+
+        print("Iterating paid content...")
+        for item in tqdm.tqdm(media, leave=True, position=0, colour="red"):
             r = c.get(item)
             rheaders = r.headers
             last_modified = rheaders.get("last-modified")
@@ -91,5 +94,4 @@ def download_paid(media):
             hash = md5(r.content)
             if add_to_db(hash, file_name):
                 with open(file, 'wb') as f:
-                    print("Downloading: {}".format(file))
                     f.write(r.content)

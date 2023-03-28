@@ -52,7 +52,7 @@ def make_config(path, config):
     config = {
         'config': {
             'main_profile': 'default',
-            'save_location': '/Documents/of-scraper',
+            'save_location': 'content',
             'file_size_limit': '',
             'list': ''
         }
