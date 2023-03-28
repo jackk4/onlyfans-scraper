@@ -17,7 +17,6 @@ from random import randint, choice
 from time import sleep
 from datetime import datetime, timedelta
 
-from .constants import donateEP
 from .api import init, highlights, me, messages, posts, profile, subscriptions, paid
 from .db import operations
 from .interaction import like
@@ -375,10 +374,6 @@ def daemon():
 def main():
     if platform.system == 'Windows':
         os.system('color')
-#     try:
-#         webbrowser.open(donateEP)
-#     except:
-#         pass
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
