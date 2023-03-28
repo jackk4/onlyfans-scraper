@@ -1,10 +1,11 @@
 FROM python:3.10.10-slim
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 ADD . /scraper
 
 VOLUME /logs
 
-WORKDIR /scraper/onlyfans_scraper
+WORKDIR /scraper
 
 # Install and activate virtual environment
 RUN python -m pip install --upgrade pip && \
@@ -13,6 +14,6 @@ RUN python -m pip install --upgrade pip && \
     source venv/bin/activate && \
     pip install -r requirements.txt
 
-RUN chmod +x dist/run.sh
+RUN chmod +x onlyfans_scraper/dist/run.sh
 
-ENTRYPOINT ["dist/run.sh"]
+ENTRYPOINT ["onlyfans_scraper/dist/run.sh"]
