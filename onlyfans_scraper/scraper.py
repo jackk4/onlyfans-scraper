@@ -382,6 +382,7 @@ def main():
     )
     parser.add_argument(
         '-a', '--all', help='scrape the content of all users', action='store_true')
+    parser.add_argument('-l', '--loop', help='When finished with downloading, start the prompts again. This is only used if no other arguments are provided', action='store_true')
     parser.add_argument(
         '-d', '--daemon', help='This will run the program in the background and scrape everything from everyone. It will run untill manually killed.', action='store_true'
     )

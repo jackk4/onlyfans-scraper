@@ -6,4 +6,6 @@ VOLUME /logs
 
 WORKDIR /scraper
 
+RUN chmod +x onlyfans_scraper/dist/run.sh
+
 ENTRYPOINT ["onlyfans_scraper/dist/run.sh"]

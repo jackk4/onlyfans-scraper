@@ -12,7 +12,8 @@ if [[ "$BRANCH_NAME" =~ ^release\/[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
 
 else
     echo Unable to create a tag from branch name ["${X_TAG_NAME}"]. Make sure to only run this from a release branch.
-    exit
+    TAG_NAME=${DEFAULT_VERSION}
+    echo Using 'latest'...
 fi
 
 docker build \
