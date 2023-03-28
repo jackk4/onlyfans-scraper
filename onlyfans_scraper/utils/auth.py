@@ -12,7 +12,7 @@ import json
 import pathlib
 import time
 from urllib.parse import urlparse
-
+from pathlib import Path
 import httpx
 
 from .profiles import get_current_profile
@@ -37,29 +37,29 @@ def read_auth():
         except FileNotFoundError:
             print(
                 "You don't seem to have an `auth.json` file. Please fill the following out:")
-            make_auth(p)
+            make_auth()
     return auth
 
 
 def edit_auth():
     profile = get_current_profile()
 
-    p = pathlib.Path.home() / configPath / profile
+    p = pathlib.Path(authPath)
     if not p.is_dir():
         p.mkdir(parents=True, exist_ok=True)
 
     try:
         with open(p / authFile, 'r') as f:
             auth = json.load(f)
-        make_auth(p, auth)
+        make_auth(auth)
 
         print('Your `auth.json` file has been edited.')
     except FileNotFoundError:
         if ask_make_auth_prompt():
-            make_auth(p)
+            make_auth()
 
 
-def make_auth(path, auth=None):
+def make_auth(auth=None):
     if not auth:
         auth = {
             'auth': {
@@ -74,7 +74,7 @@ def make_auth(path, auth=None):
 
     auth['auth'].update(auth_prompt(auth['auth']))
 
-    with open(path / authFile, 'w') as f:
+    with open(Path(authPath, authFile), 'w') as f:
         f.write(json.dumps(auth, indent=4))
 
 
