@@ -17,7 +17,6 @@ from random import randint, choice
 from time import sleep
 from datetime import datetime, timedelta
 
-from .constants import donateEP
 from .api import init, highlights, me, messages, posts, profile, subscriptions, paid
 from .db import operations
 from .interaction import like
@@ -350,7 +349,7 @@ def silent_run():
     paid.download_paid(paid_content)
 
     print("Iterating user profiles...")
-    users_pbar = tqdm(usernames[:1], position=0, leave=True)
+    users_pbar = tqdm(usernames, position=0, leave=True)
     for username in users_pbar:
         users_pbar.set_description(f"User=[{username}]")
         model_id = profile.get_id(headers, username)
@@ -375,10 +374,6 @@ def daemon():
 def main():
     if platform.system == 'Windows':
         os.system('color')
-#     try:
-#         webbrowser.open(donateEP)
-#     except:
-#         pass
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
