@@ -3,15 +3,14 @@ DOCKERFILE="onlyfans_scraper/dist/Dockerfile"
 IMAGE_NAME="of-scraper"
 DEFAULT_VERSION="latest"
 
-while getopts "t:" option; do
-    case ${option} in
-        t ) # Add tag
-        X_TAG_NAME=$OPTARG
-        ;;
-    esac
-done
+X_TAG_NAME=$(git branch --show-current)
 
-TAG_NAME=${X_TAG_NAME:-DEFAULT_VERSION}
+if [[ "$X_TAG_NAME" =~ ^release/[0-9]+\./[0-9]+\./[0-9]+$ ]]; then
+    TAG_NAME=${X_TAG_NAME}
+else
+    echo Unable to create a tag from branch name ["${X_TAG_NAME}"]. Make sure to only run this from a release branch.
+    exit
+fi
 
 docker build \
     --pull \
