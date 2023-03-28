@@ -12,27 +12,15 @@ import shutil
 
 from .config import CONFIG, update_config
 from .prompts import get_profile_prompt
-from ..constants import configPath, configFile
-configPath = '.config/onlyfans-scraper'
-
+from ..constants import configPath, configFile, default_profile
 
 def get_profile_path():
-    config_path = pathlib.Path.home() / configPath
+    config_path = pathlib.Path(configPath)
     return config_path
 
 
 def get_profiles() -> list:
     config_path = get_profile_path()
-
-    # (This block of code should be removed in the 1.0 release)
-    #
-    # If user upgraded from an older version of onlyfans-scraper or if the user
-    # has an auth.json or models.db file in the config_path:
-    # if has_files(config_path):
-    #     create_profile(config_path, mainProfile)
-    #     move_files(config_path, mainProfile)
-
-    # If not, continue as usual:
     dir_contents = config_path.glob('*')
     profiles = [item for item in dir_contents if item.is_dir()]
     return profiles
@@ -66,7 +54,7 @@ def change_profile():
     print('Current profiles:')
     profile = get_profile_prompt(print_profiles())
 
-    update_config(mainProfile, profile)
+    update_config(default_profile, profile)
 
     print(f'\033[32mSuccessfully changed profile to\033[0m {profile}')
 
