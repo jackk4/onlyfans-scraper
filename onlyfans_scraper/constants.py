@@ -9,8 +9,8 @@ r"""
 
 from pathlib import Path
 
-homePath = str(Path.home()) + '/Vault/OfScraper'
-preferences = 'pref_config.py'
+homePath = str(Path.home()) + '/Vault/ScraperConfig'
+contentPath = str(Path.home()) + '/Vault/ScraperData'
 configPath = homePath + '/.config'
 configFile = 'config.json'
 authPath = homePath + '/.config'
@@ -64,7 +64,7 @@ mainPromptChoices = {
     'Download Paid Content': 6
 }
 usernameOrListChoices = {
-    'Print a list of my subscriptions': 0,
+    'Select from a list of subscriptions': 0,
     'Enter a username': 1,
     'Scrape all users that I\'m subscribed to': 2
 }
