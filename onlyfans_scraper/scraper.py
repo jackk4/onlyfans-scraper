@@ -13,9 +13,7 @@ from tqdm import tqdm
 import os
 import sys
 import platform
-from random import randint, choice
 from time import sleep
-from datetime import datetime, timedelta
 
 from .api import init, highlights, me, messages, posts, profile, subscriptions, paid
 from .db import operations
@@ -143,7 +141,6 @@ def do_download_content(headers, username, model_id, ignore_prompt=False):
         combined_urls = process_areas(headers, username, model_id)
     # If we shouldn't ignore the areas prompt:
 
-    print(len(combined_urls))
     asyncio.run(download.process_urls(
         headers,
         username,
@@ -167,7 +164,9 @@ def get_model(parsed_subscriptions: list) -> tuple:
     to the model whose content they would like to scrape.
     """
     user = prompts.models_prompt(parsed_subscriptions)
-    return parsed_subscriptions[parsed_subscriptions[0] == user['models']]
+    for sub in parsed_subscriptions:
+        if sub[0] == user['models']:
+            return sub
 
 
 def get_models(headers, subscribe_count) -> list:

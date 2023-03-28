@@ -31,7 +31,7 @@ def read_auth():
 
     while True:
         try:
-            with open(p / authFile, 'r') as f:
+            with open(p / profile / authFile, 'r') as f:
                 auth = json.load(f)
             break
         except FileNotFoundError:
@@ -49,7 +49,7 @@ def edit_auth():
         p.mkdir(parents=True, exist_ok=True)
 
     try:
-        with open(p / authFile, 'r') as f:
+        with open(p / profile / authFile, 'r') as f:
             auth = json.load(f)
         make_auth(auth)
 
@@ -60,6 +60,8 @@ def edit_auth():
 
 
 def make_auth(auth=None):
+    profile = get_current_profile()
+
     if not auth:
         auth = {
             'auth': {
@@ -74,7 +76,9 @@ def make_auth(auth=None):
 
     auth['auth'].update(auth_prompt(auth['auth']))
 
-    with open(Path(authPath, authFile), 'w') as f:
+    if not Path(authPath, profile).is_dir():
+        Path(authPath, profile).mkdir(parents=True, exist_ok=True)
+    with open(Path(authPath, profile, authFile), 'w') as f:
         f.write(json.dumps(auth, indent=4))
 
 
@@ -99,7 +103,7 @@ def add_cookies(client):
     profile = get_current_profile()
 
     p = pathlib.Path(authPath)
-    with open(p / authFile, 'r') as f:
+    with open(p / profile / authFile, 'r') as f:
         auth = json.load(f)
 
     domain = 'onlyfans.com'
@@ -151,7 +155,7 @@ def create_sign(link, headers):
 
 def read_request_auth() -> dict:
     profile = get_current_profile()
-    p = pathlib.Path.home() / configPath / profile / requestAuth
+    p = Path(configPath, profile, requestAuth)
     with open(p, 'r') as f:
         content = json.load(f)
     return content
@@ -174,7 +178,7 @@ def make_request_auth():
 
         profile = get_current_profile()
 
-        p = pathlib.Path.home() / configPath / profile
+        p = Path(configPath, profile)
         if not p.is_dir():
             p.mkdir(parents=True, exist_ok=True)
 
