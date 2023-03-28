@@ -6,12 +6,16 @@ r"""
  \___/ |_| |_||_| \__, ||_|   \__,_||_| |_||___/       |___/ \___||_|    \__,_|| .__/  \___||_|   
                   |___/                                                        |_|                
 """
-preferences = 'pref_config.py'
-configPath = '.config/onlyfans-scraper'
+
+from pathlib import Path
+
+homePath = str(Path.home()) + '/Vault/ScraperConfig'
+contentPath = str(Path.home()) + '/Vault/ScraperData'
+configPath = homePath + '/.config'
 configFile = 'config.json'
+authPath = homePath + '/.config'
 authFile = 'auth.json'
 databaseFile = 'models.db'
-mainProfile = 'main_profile'
 requestAuth = 'request_auth.json'
 debug = False
 
@@ -60,7 +64,7 @@ mainPromptChoices = {
     'Download Paid Content': 6
 }
 usernameOrListChoices = {
-    'Print a list of my subscriptions': 0,
+    'Select from a list of subscriptions': 0,
     'Enter a username': 1,
     'Scrape all users that I\'m subscribed to': 2
 }

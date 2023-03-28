@@ -10,9 +10,9 @@ r"""
 import pathlib
 import shutil
 
-from .config import read_config, update_config
+from .config import CONFIG, update_config
 from .prompts import get_profile_prompt
-from ..constants import configPath, configFile, mainProfile
+from ..constants import configPath, configFile
 configPath = '.config/onlyfans-scraper'
 
 
@@ -116,8 +116,7 @@ def print_profiles() -> list:
 
 
 def get_current_profile():
-    config = read_config()
-    return config['config'][mainProfile]
+    return CONFIG['main_profile']
 
 
 def print_current_profile():

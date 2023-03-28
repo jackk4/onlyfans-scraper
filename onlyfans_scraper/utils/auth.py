@@ -17,7 +17,7 @@ import httpx
 
 from .profiles import get_current_profile
 from .prompts import auth_prompt, ask_make_auth_prompt
-from ..constants import configPath, authFile, DC_EP, requestAuth
+from ..constants import configPath, authPath, authFile, DC_EP, requestAuth
 
 
 def read_auth():
@@ -25,7 +25,7 @@ def read_auth():
 
     profile = get_current_profile()
 
-    p = pathlib.Path.home() / configPath / profile
+    p = pathlib.Path(authPath)
     if not p.is_dir():
         p.mkdir(parents=True, exist_ok=True)
 
@@ -98,7 +98,7 @@ def make_headers(auth):
 def add_cookies(client):
     profile = get_current_profile()
 
-    p = pathlib.Path.home() / configPath / profile
+    p = pathlib.Path(authPath)
     with open(p / authFile, 'r') as f:
         auth = json.load(f)
 

@@ -1,13 +1,16 @@
 <h3>DISCLAIMERS:</h3>
 <ul>
     <li>
+        This tool was built by [taux1c on GitHub](https://github.com/taux1c). I wanted to add some features and will provide a list of all changes at the bottom of this README.
+    </li>
+    <li>
         This tool is not affiliated, associated, or partnered with OnlyFans in any way. We are not authorized, endorsed, or sponsored by OnlyFans. All OnlyFans trademarks remain the property of Fenix International Limited.
     </li>
     <li>
         This is a theoritical program only and is for educational purposes. If you choose to use it then it may or may not work. You solely accept full responsability and indemnify the creator, hostors, contributors and all other involved persons from any any all responsability.
     </li>
     <li>
-        <b>There is no support offered for this nor are bug reports accepted. Do not open an issue, it will be closed and you will be banned.</b>
+        The original repo for this project does not allow issues. <b>ISSUES ARE WELCOME HERE!!</b>
     </li>
 
 
@@ -18,57 +21,30 @@
 </h3>
 
 
-<img src="https://raw.githubusercontent.com/taux1c/onlyfans-scraper/main/media/example.png" width="550">
+## Requirements
 
-## Installation
-
-Windows: 
-```
-pip install onlyfans-scraper
-```
-or 
-
-```
-pip install git+https://github.com/taux1c/onlyfans-scraper
-```
-
-If you're on macOS/Linux, then do this instead:
-```
-pip3 install onlyfans-scraper
-```
-or
-```
-pip3 install git+https://github.com/taux1c/onlyfans-scraper
-```
+- Python 3.9+ 
+- An OnlyFans account (duhh)
+- 15-20 minutes of your precious time to set up
 
 ## Setup
 
-Before you can fully use it, you need to fill out some fields in a `auth.json` file. This file will be created for you when you run the program for the first time.
+1. Install Python 3.10 (preferred but 3.9+ should work). You can download it [here](https://www.python.org/downloads/)
 
-These are the fields:
-
-```json
-{
-    "auth": {
-        "app-token": "33d57ade8c02dbc5a333db99ff9ae26a",
-        "sess": "",
-        "auth_id": "",
-        "auth_uniq_": "",
-        "user_agent": "",
-        "x-bc": ""
-    }
-}
+2. Open this directory in a terminal and type:
+```
+pip install -r requirements.txt
 ```
 
-It's really not that bad. I'll show you in the next sections how to get these bits of info.
+3. Run the data scraper with:
+```
+sh ./run.sh
+```
 
+4. You will be prompted with some questions to configure authentication. 
+See "Getting Your Auth Info" below to show how to get the values it will prompt you for.
 
-### Step One: Creating the 'auth.json' File
-
-You first need to run the program in order for the `auth.json` file to be created. To run it, simply type `onlyfans-scraper` in your terminal and hit enter. Because you don't have an `auth.json` file, the program will create one for you and then ask you to enter some information. Now we need to get that information.
-
-
-### Step Two: Getting Your Auth Info
+### Getting Your Auth Info
 
 ***If you've already used DIGITALCRIMINAL's OnlyFans script, you can simply copy and paste the auth information from there to here.***
 
@@ -120,20 +96,20 @@ Once you do that, the program will ask for your user agent. You should be able t
 
 After it asks for your user agent, it will ask for your `x-bc` token. You should also be able to find this in the `Request Headers` section.
 
-You're all set and you can now use `onlyfans-scraper`.
+You're all set and you can now use `the scraper.
 
 
 ## Usage
 
-Whenever you want to run the program, all you need to do is type `onlyfans-scraper` in your terminal:
-
-```
-onlyfans-scraper
-```
+Navigate to the project directory and use:
+'''
+python -m onlyfans_scraper.scraper [OPTIONS]
+'''
+Use the option `-h` or `--help` to view all available options.
 
 That's it. It's that simple.
 
- Once the program launches, all you need to do is follow the on-screen directions. The first time you run it, it will ask you to fill out your `auth.json` file (directions for that in the section above). 
+Once the program launches, all you need to do is follow the on-screen directions. The first time you run it, it will ask you to fill out your `auth.json` file (directions for that in the section above). 
 
 You will need to use your arrow keys to select an option:
 
@@ -177,26 +153,14 @@ Then the path you enter should be `/Users/home/.sites/OnlyFans/melodyjai/Metadat
 
 <h1> Bugs/Issues/Suggestions </h1>
 
-If you run into trouble try the discord, careful though we do bite. If you open an issue for any of the following you will be banned from opening future issues. These are not issues they are operator error.
+If you run into trouble, create an issue on GitHub and I'll take a look!
+
+<h1> Improvements </h1>
+
+These are the changes that have been made since the original repository.
 
 <ol>
     <li>
-        Status Down - This means that your auth details are bad, keep trying.
-    </li>
-    <li>
-        onlyfans-scraper command not found - This means that you have not added the path to your directory. You will have to look this up on your own with google.
-    </li>
-    <li>
-        404 page not found or any other 404 error. - The post or profile can't be found. The user has been suspended or deleted or the post was removed and isn't completely deleted yet. No fix for this other than unsubscribing from the user. Do not open an issue for it.
-    </li>
-</ol>
-<h3>Honestly unless you're one of my subscribers or support the project in some form your suggestions are generally ignored.</h3>
-
-</ol>
-<hr width="100%">
-<h3>SOCIALS</h3>
-<ol>
-    <li>
-        Discord: Closed - Not accepting new members.
+        Run/modify with Python directly - Assuming you have Python 3.10 installed (tested on 3.10.10), you can modify this source code and run it with the "run.sh" script. (See "Run with Python" section)
     </li>
 </ol>

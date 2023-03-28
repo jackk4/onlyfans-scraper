@@ -39,7 +39,7 @@ async def scrape_subscriptions(headers, offset=0) -> list:
 
 def parse_subscriptions(subscriptions: list) -> list:
     data = [(profile['username'], profile['id'], dates.convert_date_to_mdyhms(
-        profile['subscribedByExpireDate'])) for profile in subscriptions]
+        profile['subscribedByExpireDate']), profile['listsStates']) for profile in subscriptions]
     return data
 
 
