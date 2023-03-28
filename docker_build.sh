@@ -1,5 +1,6 @@
 #!/bin/bash
 
+DOCKER_REPO="$DOCKER_REPO"
 DOCKERFILE="onlyfans_scraper/dist/Dockerfile"
 IMAGE_NAME="of-scraper"
 DEFAULT_VERSION="latest"
@@ -17,5 +18,7 @@ else
 fi
 
 docker build \
-    --tag "${IMAGE_NAME}:${TAG_NAME}" \
+    --tag "${DOCKER_REPO}/${IMAGE_NAME}:${TAG_NAME}" \
     --file "${DOCKERFILE}" .
+
+docker push ${DOCKER_REPO}/${IMAGE_NAME}:${TAG_NAME}
