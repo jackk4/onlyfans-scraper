@@ -6,7 +6,4 @@ VOLUME /logs
 
 WORKDIR /scraper
 
-# ENTRYPOINT ["tail", "-f", "/dev/null"]
-
 ENTRYPOINT ["onlyfans_scraper/dist/run.sh"]
-# CMD ["-a"]
