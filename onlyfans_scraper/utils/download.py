@@ -22,6 +22,7 @@ except ModuleNotFoundError:
 
 from .auth import add_cookies
 from .config import CONFIG
+from ..constants import contentPath
 from .dates import convert_date_to_timestamp
 from .separate import separate_by_id
 from ..db import operations
@@ -36,7 +37,7 @@ async def process_urls(headers, username, model_id, urls):
         save_location = CONFIG['save_location']
         if save_location:
             try:
-                dir = pathlib.Path(pathlib.Path.home(), save_location)
+                dir = pathlib.Path(contentPath, save_location)
             except:
                 print(f"Unable to find save location. Using current working directory. ({pathlib.Path.cwd()})")
         else:
@@ -60,42 +61,36 @@ async def process_urls(headers, username, model_id, urls):
             photo_count = 0
             video_count = 0
             skipped = 0
-            total_bytes_downloaded = 0
-            data = 0
 
-            desc = 'Progress: ({p_count} photos, {v_count} videos, {skipped} skipped || {data})'
+            desc = 'Downloading: ({p_count} photos, {v_count} videos, {skipped} skipped)'
 
-            with tqdm(desc=desc.format(p_count=photo_count, v_count=video_count, skipped=skipped, data=data), total=len(aws), colour='cyan', leave=True) as main_bar:
+            with tqdm(desc=desc.format(p_count=photo_count, v_count=video_count, skipped=skipped), total=len(aws), colour='cyan', position=0, leave=True) as inner_bar:
                 for coro in asyncio.as_completed(aws):
                     try:
-                        media_type, num_bytes_downloaded = await coro
+                        media_type = (await coro)[0]
                     except Exception as e:
                         media_type = None
-                        num_bytes_downloaded = 0
                         print(e)
-
-                    total_bytes_downloaded += num_bytes_downloaded
-                    data = convert_num_bytes(total_bytes_downloaded)
 
                     if media_type == 'photo':
                         photo_count += 1
-                        main_bar.set_description(
+                        inner_bar.set_description(
                             desc.format(
-                                p_count=photo_count, v_count=video_count, skipped=skipped, data=data), refresh=False)
+                                p_count=photo_count, v_count=video_count, skipped=skipped), refresh=False)
 
                     elif media_type == 'video':
                         video_count += 1
-                        main_bar.set_description(
+                        inner_bar.set_description(
                             desc.format(
-                                p_count=photo_count, v_count=video_count, skipped=skipped, data=data), refresh=False)
+                                p_count=photo_count, v_count=video_count, skipped=skipped), refresh=False)
 
                     elif media_type == 'skipped':
                         skipped += 1
-                        main_bar.set_description(
+                        inner_bar.set_description(
                             desc.format(
-                                p_count=photo_count, v_count=video_count, skipped=skipped, data=data), refresh=False)
+                                p_count=photo_count, v_count=video_count, skipped=skipped), refresh=False)
 
-                    main_bar.update()
+                    inner_bar.update()
 
 
 def convert_num_bytes(num_bytes: int) -> str:
@@ -122,14 +117,9 @@ async def download(client, path, model_id, file_size_limit,
                 if total > int(file_size_limit):
                     return 'skipped', 1
 
-            with tqdm(desc=filename, total=total, unit_scale=True, unit_divisor=1024, unit='B', leave=False) as bar:
-                num_bytes_downloaded = r.num_bytes_downloaded
-                with open(path_to_file, 'wb') as f:
-                    async for chunk in r.aiter_bytes(chunk_size=1024):
-                        f.write(chunk)
-                        bar.update(
-                            r.num_bytes_downloaded - num_bytes_downloaded)
-                        num_bytes_downloaded = r.num_bytes_downloaded
+            with open(path_to_file, 'wb') as f:
+                async for chunk in r.aiter_bytes(chunk_size=1024):
+                    f.write(chunk)
 
         else:
             r.raise_for_status()
@@ -142,7 +132,7 @@ async def download(client, path, model_id, file_size_limit,
             data = (id_, filename)
             operations.write_from_data(data, model_id)
 
-    return media_type, num_bytes_downloaded
+    return media_type, 0
 
 
 def set_time(path, timestamp):
