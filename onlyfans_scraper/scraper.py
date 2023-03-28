@@ -9,7 +9,7 @@ r"""
 
 import argparse
 import asyncio
-import datetime
+from tqdm import tqdm
 import os
 import sys
 import platform
@@ -22,14 +22,11 @@ from .api import init, highlights, me, messages, posts, profile, subscriptions, 
 from .db import operations
 from .interaction import like
 from .utils import auth, config, download, profiles, prompts
-import webbrowser
-from revolution import Revolution
 from .utils.nap import nap_or_sleep
 
 CONFIG = config.CONFIG
 
-# @need_revolution("Getting messages...")
-@Revolution(desc='Getting messages...')
+
 def process_messages(headers, model_id):
     messages_ = messages.scrape_messages(headers, model_id)
 
@@ -38,8 +35,7 @@ def process_messages(headers, model_id):
         return messages_urls
     return []
 
-# @need_revolution("Getting highlights...")
-@Revolution(desc='Getting highlights...')
+
 def process_highlights(headers, model_id):
     highlights_, stories = highlights.scrape_highlights(headers, model_id)
 
@@ -51,8 +47,7 @@ def process_highlights(headers, model_id):
         return stories_urls
     return []
 
-# @need_revolution("Getting subscriptions...")
-@Revolution(desc='Getting archived media...')
+
 def process_archived_posts(headers, model_id):
     archived_posts = posts.scrape_archived_posts(headers, model_id)
 
@@ -61,8 +56,7 @@ def process_archived_posts(headers, model_id):
         return archived_posts_urls
     return []
 
-# @need_revolution("Getting timeline media...")
-@Revolution(desc='Getting timeline media...')
+
 def process_timeline_posts(headers, model_id):
     timeline_posts = posts.scrape_timeline_posts(headers, model_id)
 
@@ -71,8 +65,7 @@ def process_timeline_posts(headers, model_id):
         return timeline_posts_urls
     return []
 
-# @need_revolution("Getting pinned media...")
-@Revolution(desc='Getting pinned media...')
+
 def process_pinned_posts(headers, model_id):
     pinned_posts = posts.scrape_pinned_posts(headers, model_id)
 
@@ -85,22 +78,26 @@ def process_pinned_posts(headers, model_id):
 def process_profile(headers, username) -> list:
     user_profile = profile.scrape_profile(headers, username)
     urls, info = profile.parse_profile(user_profile)
-    profile.print_profile_info(info)
+    # profile.print_profile_info(info)
     return urls
 
 
 def process_areas_all(headers, username, model_id) -> list:
+    print(f"Processing profile {username}")
     profile_urls = process_profile(headers, username)
-
+    print("Processing pinned posts...")
     pinned_posts_urls = process_pinned_posts(headers, model_id)
+    print("Processing timeline posts...")
     timeline_posts_urls = process_timeline_posts(headers, model_id)
+    print("Processing archived posts...")
     archived_posts_urls = process_archived_posts(headers, model_id)
+    print("Processing highlights...")
     highlights_urls = process_highlights(headers, model_id)
+    print("Processing messages...")
     messages_urls = process_messages(headers, model_id)
 
     combined_urls = profile_urls + pinned_posts_urls + timeline_posts_urls + \
         archived_posts_urls + highlights_urls + messages_urls
-
     return combined_urls
 
 
@@ -147,6 +144,7 @@ def do_download_content(headers, username, model_id, ignore_prompt=False):
         combined_urls = process_areas(headers, username, model_id)
     # If we shouldn't ignore the areas prompt:
 
+    print(len(combined_urls))
     asyncio.run(download.process_urls(
         headers,
         username,
@@ -169,39 +167,28 @@ def get_model(parsed_subscriptions: list) -> tuple:
     Prints user's subscriptions to console and accepts input from user corresponding 
     to the model whose content they would like to scrape.
     """
-    subscriptions.print_subscriptions(parsed_subscriptions)
-
-    print('\nEnter the number next to the user whose content you would like to download:')
-    while True:
-        try:
-            num = int(input('> '))
-            return parsed_subscriptions[num - 1]
-        except ValueError:
-            print("Incorrect value. Please enter an actual number.")
-        except IndexError:
-            print("Value out of range. Please pick a number that's in range")
+    user = prompts.models_prompt(parsed_subscriptions)
+    return parsed_subscriptions[parsed_subscriptions[0] == user['models']]
 
 
 def get_models(headers, subscribe_count) -> list:
     """
     Get user's subscriptions in form of a list.
     """
-    with Revolution(desc='Getting your subscriptions (this may take awhile)...') as _:
-        list_subscriptions = asyncio.run(
-            subscriptions.get_subscriptions(headers, subscribe_count))
-        parsed_subscriptions = subscriptions.parse_subscriptions(
-            list_subscriptions)
-        
+    list_subscriptions = asyncio.run(
+        subscriptions.get_subscriptions(headers, subscribe_count))
+    parsed_subscriptions = subscriptions.parse_subscriptions(
+        list_subscriptions)
+
     selected_list = CONFIG['list']
     if selected_list == '':
         return parsed_subscriptions
-    
+
     out_subscriptions = []
     for subscription in parsed_subscriptions:
         for in_list in subscription[3]:
             if in_list['name'] == selected_list:
                 out_subscriptions.append(subscription[:3])
-                brea
     return out_subscriptions
 
 
@@ -241,6 +228,7 @@ def process_prompts():
             do_download_content(headers, username, model_id)
 
         else:
+            print("Running for all...")
             # Ask if we should scrape all users
             result_verify_all_users = prompts.verify_all_users_username_or_list_prompt()
             # If we should, then:
@@ -249,13 +237,18 @@ def process_prompts():
                 parsed_subscriptions = get_models(headers, subscribe_count)
                 usernames = get_usernames(parsed_subscriptions)
 
-                for username in usernames:
+                print("Iterating user profiles...")
+                users_pbar = tqdm(usernames, position=0, leave=True)
+                for username in users_pbar:
+                    users_pbar.set_description(f"User=[{username}]")
                     try:
                         model_id = profile.get_id(headers, username)
                         do_download_content(
                             headers, username, model_id, ignore_prompt=True)
                     except Exception as e:
-                        print(f"There was an error with profile {username}.\nWe encountered the following exception: \n\n{e}")
+                        print(
+                            f"There was an error with profile {username}.\nWe encountered the following exception: \n\n{e}")
+                    users_pbar.update()
 
     elif result_main_prompt == 1:
         # Like a user's posts
@@ -335,10 +328,11 @@ def process_prompts():
 
         loop()
 
+
 def download_user(username):
     headers = auth.make_headers(auth.read_auth())
-    do_download_content(headers, username, profile.get_id(headers, username), ignore_prompt=True)
-
+    do_download_content(headers, username, profile.get_id(
+        headers, username), ignore_prompt=True)
 
 
 def silent_run():
@@ -355,13 +349,14 @@ def silent_run():
     paid_content = paid.scrape_paid()
     paid.download_paid(paid_content)
 
-    for username in usernames:
-        try:
-            model_id = profile.get_id(headers, username)
-            do_download_content(
-                headers, username, model_id, ignore_prompt=True)
-        except Exception as e:
-            print("Silent run failed with exception: ", e)
+    print("Iterating user profiles...")
+    users_pbar = tqdm(usernames, position=0, leave=True)
+    for username in users_pbar:
+        users_pbar.set_description(f"User=[{username}]")
+        model_id = profile.get_id(headers, username)
+        do_download_content(
+            headers, username, model_id, ignore_prompt=True)
+        users_pbar.update()
 
 
 def daemon():
@@ -377,8 +372,6 @@ def daemon():
             sleep(s)
 
 
-
-
 def main():
     if platform.system == 'Windows':
         os.system('color')
@@ -386,7 +379,6 @@ def main():
 #         webbrowser.open(donateEP)
 #     except:
 #         pass
-
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -400,15 +392,19 @@ def main():
         '-d', '--daemon', help='This will run the program in the background and scrape everything from everyone. It will run untill manually killed.', action='store_true'
     )
     parser.add_argument(
-        '-p', '--purchased', help = 'Download only individually purchased content.', action = 'store_true'
+        '-p', '--purchased', help='Download only individually purchased content.', action='store_true'
     )
     args = parser.parse_args()
     if args.edit:
         pass
     if args.username:
         usernames = args.username
-        for username in usernames.strip().split(','):
+        print("Iterating user profiles...")
+        users_pbar = tqdm(usernames.strip().split(','), position=0, leave=True)
+        for username in users_pbar:
+            users_pbar.set_description(f"User=[{username}]")
             download_user(username)
+            users_pbar.update()
         sys.exit()
     if args.all:
         silent = True
