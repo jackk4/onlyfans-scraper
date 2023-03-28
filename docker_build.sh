@@ -1,3 +1,4 @@
+#!/bin/bash
 
 DOCKERFILE="onlyfans_scraper/dist/Dockerfile"
 IMAGE_NAME="of-scraper"
