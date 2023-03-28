@@ -1,1 +1,1 @@
-python -m onlyfans_scraper.scraper
+python -m onlyfans_scraper.scraper "$@"

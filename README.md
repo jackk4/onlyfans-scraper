@@ -101,11 +101,15 @@ You're all set and you can now use `the scraper.
 
 ## Usage
 
-Whenever you want to run the program, you need to navigate to the project directory and type `sh run.sh`
+Navigate to the project directory and use:
+'''
+python -m onlyfans_scraper.scraper [OPTIONS]
+'''
+Use the option `-h` or `--help` to view all available options.
 
 That's it. It's that simple.
 
- Once the program launches, all you need to do is follow the on-screen directions. The first time you run it, it will ask you to fill out your `auth.json` file (directions for that in the section above). 
+Once the program launches, all you need to do is follow the on-screen directions. The first time you run it, it will ask you to fill out your `auth.json` file (directions for that in the section above). 
 
 You will need to use your arrow keys to select an option:
 

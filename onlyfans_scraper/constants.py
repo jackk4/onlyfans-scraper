@@ -9,14 +9,13 @@ r"""
 
 from pathlib import Path
 
-homePath = str(Path.home()) + '/Vault/OfScraper'
-preferences = 'pref_config.py'
+homePath = str(Path.home()) + '/Vault/ScraperConfig'
+contentPath = str(Path.home()) + '/Vault/ScraperData'
 configPath = homePath + '/.config'
 configFile = 'config.json'
 authPath = homePath + '/.config'
 authFile = 'auth.json'
 databaseFile = 'models.db'
-mainProfile = 'main_profile'
 requestAuth = 'request_auth.json'
 debug = False
 
@@ -51,8 +50,6 @@ postURL = 'https://onlyfans.com/{}/{}'
 
 DC_EP = 'https://raw.githubusercontent.com/DATAHOARDERS/dynamic-rules/main/onlyfans.json'
 
-donateEP = "https://www.buymeacoffee.com/taux1c"
-
 purchased_contentEP = "https://onlyfans.com/api2/v2/posts/paid?limit=10&skip_users=all&format=infinite&offset={}"
 
 mainPromptChoices = {
@@ -65,7 +62,7 @@ mainPromptChoices = {
     'Download Paid Content': 6
 }
 usernameOrListChoices = {
-    'Print a list of my subscriptions': 0,
+    'Select from a list of subscriptions': 0,
     'Enter a username': 1,
     'Scrape all users that I\'m subscribed to': 2
 }

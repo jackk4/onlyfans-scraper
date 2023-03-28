@@ -82,18 +82,32 @@ def username_prompt() -> str:
     answer = prompt(questions)
     return answer[name]
 
+def models_prompt(subscriptions: list) -> str:
+    name = 'models'
+
+    models = [sub[0] for sub in subscriptions]
+    questions = [
+        {
+            'type': 'list',
+            'name': name,
+            'message': 'Which model would you like to scrape',
+            'choices': models
+        }
+    ]
+
+    answer = prompt(questions)
+    return answer
 
 def areas_prompt() -> list:
     name = 'areas'
 
     questions = [
         {
-            'type': 'checkbox',
-            'qmark': '[?]',
+            'type': 'list',
             'name': name,
-            'message': 'Which area(s) would you like to scrape? (Press ENTER to continue)',
+            'message': 'Which area(s) would you like to scrape?',
             'choices': [
-                Choice('All', enabled=True),
+                Choice('All'),
                 Choice('Timeline'),
                 Choice('Archived'),
                 Choice('Highlights'),
@@ -301,12 +315,12 @@ def config_prompt(config) -> dict:
             'type': 'input',
             'name': 'main_profile',
             'message': 'What would you like your main profile to be?',
-            'default': config['main_profile']
+            'default': config.get('main_profile', '')
         },
         {
             'type': 'input',
             'name': 'save_location',
-            'message': 'Where would you like to save downloaded content?',
+            'message': 'Where would you like to save downloaded content (absolute path)?',
             'default': config.get('save_location', '')
         },
         {
@@ -319,5 +333,5 @@ def config_prompt(config) -> dict:
 
     answers = prompt(questions)
     answers.update({'save_location': answers.get(
-        'save_location').strip('\"')})
+        'save_location').replace('\"', '/')})
     return answers

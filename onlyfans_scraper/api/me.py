@@ -34,4 +34,4 @@ def parse_user(profile):
 
 
 def print_user(name, username):
-    print(f'Welcome, {name} | {username}')
+    print(f'Welcome! You are authenticated as {name} ({username})')
