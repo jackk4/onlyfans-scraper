@@ -63,7 +63,7 @@ def make_config(path, config):
 
 
 def update_config(field: str, value):
-    p = pathlib.Path.home() / configPath / configFile
+    p = pathlib.Path(configPath, configFile)
 
     with open(p, 'r') as f:
         config = json.load(f)
@@ -85,7 +85,7 @@ def auto_update_config(path, config: dict) -> dict:
 
 
 def edit_config():
-    p = pathlib.Path.home() / configPath / configFile
+    p = pathlib.Path(configPath, configFile)
 
     with open(p, 'r') as f:
         config = json.load(f)

@@ -9,15 +9,28 @@ r"""
 
 from pathlib import Path
 
-homePath = str(Path.home()) + '/Vault/ScraperConfig'
-contentPath = str(Path.home()) + '/Vault/ScraperData'
-configPath = homePath + '/.config'
+# 
+homePath = "/".join(__file__.replace('\\','/').split('/')[:-1]) + '/runtime'
+
+### MOFIFY THESE
+
+debug = False
+
+# Directories to store config, auth and output data
+configFolder = ".config"
+contentFolder = "content"
+authFolder = ".auth"
+default_profile = "default"
+
+# File names to be created
 configFile = 'config.json'
-authPath = homePath + '/.config'
 authFile = 'auth.json'
 databaseFile = 'models.db'
 requestAuth = 'request_auth.json'
-debug = False
+
+configPath = f'{homePath}/{configFolder}'
+contentPath = f'{homePath}/{contentFolder}'
+authPath = f'{homePath}/{authFolder}'
 
 # LIST NAMES (IF HARDCODED, MOST WILL BE AUTOMATIC
 
