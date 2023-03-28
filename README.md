@@ -1,7 +1,7 @@
 <h3>DISCLAIMERS:</h3>
 <ul>
     <li>
-        This tool was built by [taux1c on GitHub](https://github.com/taux1c). I wanted to add some features and will provide a list of all changes at the bottom of this README.
+        This tool was built by <a href="https://github.com/taux1c">taux1c on GitHub</a>. I wanted to add some features and will provide a list of all changes at the bottom of this README.
     </li>
     <li>
         This tool is not affiliated, associated, or partnered with OnlyFans in any way. We are not authorized, endorsed, or sponsored by OnlyFans. All OnlyFans trademarks remain the property of Fenix International Limited.
