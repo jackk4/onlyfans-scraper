@@ -7,7 +7,7 @@ r"""
                   |___/                                                        |_|                
 """
 import debugpy
-debugpy.listen(("0.0.0.0", 5678)
+debugpy.listen(("0.0.0.0", 5678))
 
 import argparse
 import asyncio
