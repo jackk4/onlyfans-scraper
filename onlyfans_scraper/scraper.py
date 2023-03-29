@@ -6,6 +6,8 @@ r"""
  \___/ |_| |_||_| \__, ||_|   \__,_||_| |_||___/       |___/ \___||_|    \__,_|| .__/  \___||_|   
                   |___/                                                        |_|                
 """
+import debugpy
+debugpy.listen(("0.0.0.0", 5678)
 
 import argparse
 import asyncio
