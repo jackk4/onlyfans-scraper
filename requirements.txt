@@ -2,5 +2,5 @@ httpx[http2]~=0.23.3
 InquirerPy~=0.3.4
 tqdm~=4.64.1
 win32_setctime
-
+debugpy
 setuptools~=57.0.0
