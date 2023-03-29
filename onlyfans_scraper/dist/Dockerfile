@@ -7,11 +7,7 @@ VOLUME /logs
 
 WORKDIR /scraper
 
-# Install and activate virtual environment
-RUN python -m pip install --upgrade pip && \
-    python -m pip install virtualenv && \
-    virtualenv venv && \
-    source venv/bin/activate && \
+RUN python -m pip install --upgrade pip \
     pip install -r requirements.txt
 
 RUN chmod +x onlyfans_scraper/dist/run.sh
